@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hamtaro"
-version = "0.0.1"
+version = "0.0.2"
 description = "A smol & cute HTTP downloader"
 authors = ["dani <danii.dias@proton.me>"]
 readme = "README.md"
