@@ -119,7 +119,7 @@ class Downloader:
 
             if not response_info:
                 if (length := download_info.length):
-                    request.headers['Range'] = f'bytes={download_info.offset}-{length-1}'
+                    request.headers['Range'] = f'bytes={offset}-{length-1}'
                 response_info = await self.send_request(
                     request, stream=True,
                     conn_retries=conn_retries, http_retries=http_retries,
@@ -135,9 +135,9 @@ class Downloader:
                     async with download_info.lock:
                         if (
                             (length := download_info.length)
-                            and downloaded > (current_length := length-download_info.offset)
+                            and downloaded > (actual_length := length-download_info.offset)
                         ):
-                            chunk_length = len(chunk) - (downloaded-current_length)
+                            chunk_length = len(chunk) - (downloaded-actual_length)
                             if chunk_length <= 0:
                                 break
                             await self._write_and_update(
