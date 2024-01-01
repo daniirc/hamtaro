@@ -140,18 +140,14 @@ class Downloader:
                             chunk_length = len(chunk) - (downloaded-current_length)
                             if chunk_length <= 0:
                                 break
-                            await afp.write(chunk[:chunk_length], offset)
+                            await self._write_and_update(
+                                afp, chunk[:chunk_length], offset, download_info, progress_info)
                             offset += chunk_length
-                            download_info.update(chunk_length)
-                            if progress_info:
-                                await progress_info.update(chunk_length)
                             break
 
-                        await afp.write(chunk, offset)
+                        await self._write_and_update(
+                            afp, chunk, offset, download_info, progress_info)
                         offset += len(chunk)
-                        download_info.update(len(chunk))
-                        if progress_info:
-                            await progress_info.update(len(chunk))
             except httpx.RequestError as exc:
                 logger.error(f'Connection error while reading HTTP response: {exc!r}')
                 length = download_info.length
@@ -174,6 +170,16 @@ class Downloader:
                 continue
             break
         download_info.done.set()
+
+    @staticmethod
+    async def _write_and_update(
+        afp: AIOFile, data: bytes, offset: int,
+        download_info: DownloadInfo, progress_info: ProgressInfo | None = None
+    ):
+        await afp.write(data, offset)
+        download_info.update(len(data))
+        if progress_info:
+            await progress_info.update(len(data))
 
     async def close(self):
         await self.client.aclose()
