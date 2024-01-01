@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "hamtaro"
+version = "0.0.1"
+description = "A smol & cute HTTP downloader"
+authors = ["dani <danii.dias@proton.me>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+httpx = {extras = ["http2"], version = "^0.26.0"}
+aiofile = "^3.8.8"
+
+[tool.poetry.scripts]
+hamtaro = "hamtaro.cli:run"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
