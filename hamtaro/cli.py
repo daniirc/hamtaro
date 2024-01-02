@@ -15,7 +15,7 @@ import httpx
 HTTP_TIMEOUT = 5
 WORKERS = 5
 
-MIN_WORKER_RANGE_SIZE = 16777216  # 16MB
+MIN_WORKER_RANGE_SIZE = 6_000_000
 
 WorkerDownloadInfoList = list[DownloadInfo]
 
