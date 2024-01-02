@@ -7,9 +7,11 @@ import httpx
 
 from aiofile import AIOFile
 
-MAX_CONN_RETRIES = 5
+MAX_CONN_RETRIES = 10
 MAX_HTTP_RETRIES = 2
-MIN_RETRY_INTERVAL = 0.2
+
+MIN_RETRY_INTERVAL = 0.1
+MAX_RETRY_INTERVAL = 1
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +85,7 @@ class Downloader:
     ) -> ResponseInfo:
         for retry in itertools.count():
             if retry > 0:
-                await asyncio.sleep(MIN_RETRY_INTERVAL * retry)
+                await asyncio.sleep(min(MIN_RETRY_INTERVAL * retry, MAX_RETRY_INTERVAL))
             try:
                 resp = await self.client.send(request, *send_args, **kwargs)
                 resp.raise_for_status()
@@ -113,9 +115,10 @@ class Downloader:
             download_info = DownloadInfo()
 
         offset = download_info.offset
+        downloaded = 0
         for retry in itertools.count():
             if retry > 0:
-                await asyncio.sleep(MIN_RETRY_INTERVAL * retry)
+                await asyncio.sleep(min(MIN_RETRY_INTERVAL * retry, MAX_RETRY_INTERVAL))
 
             if not response_info:
                 if (length := download_info.length):
@@ -128,7 +131,6 @@ class Downloader:
             conn_retries += response_info.conn_retries
             http_retries += response_info.http_retries
 
-            downloaded = 0
             try:
                 async for chunk in resp.aiter_bytes(self.CHUNK_SIZE):
                     downloaded += len(chunk)
