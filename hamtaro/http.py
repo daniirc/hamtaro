@@ -128,8 +128,8 @@ class Downloader:
                     conn_retries=conn_retries, http_retries=http_retries,
                 )
             resp = response_info.resp
-            conn_retries += response_info.conn_retries
-            http_retries += response_info.http_retries
+            conn_retries = response_info.conn_retries
+            http_retries = response_info.http_retries
 
             try:
                 async for chunk in resp.aiter_bytes(self.CHUNK_SIZE):
