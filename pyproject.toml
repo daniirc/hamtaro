@@ -2,7 +2,7 @@
 name = "hamtaro"
 version = "0.0.5"
 description = "A smol & cute HTTP downloader"
-authors = ["dani <danii.dias@proton.me>"]
+authors = ["lulu <meowctl@proton.me>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
