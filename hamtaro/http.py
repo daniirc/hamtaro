@@ -58,7 +58,7 @@ class ProgressInfo:
 
 
 class Downloader:
-    CHUNK_SIZE = 131072
+    CHUNK_SIZE = 16384
 
     def __init__(
         self, client: httpx.AsyncClient | None = None,
